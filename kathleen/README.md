@@ -16,7 +16,7 @@
 - python get_pitch.py
 - This will create a CSV with all of the pitch DataFrame
 
-For create_segments.py:
+  For create_segments.py:
 - Create a directory called "segments" in the directory that contains create_segments.py
 - python create_segments.py
 
