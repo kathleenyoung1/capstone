@@ -1,5 +1,7 @@
 # TODO: check the word count
+# TODO: check the frequencies it's supposed to be for pyin
 # TODO: figure out how to do rate of change
+# NOTE that this is starting with just the first 5 segments to test it fast
 
 import librosa
 import numpy as np
@@ -66,7 +68,7 @@ def get_wav_data():
                            'speakers':speakers, 'speaker_roles':speaker_roles, 'times_new':times_new,
                            'start':start, 'end':end})
         scotus_case = df[df['speaker_roles'] == 'scotus_justice']
-        scotus_case = scotus_case[scotus_case['word_count'] >= 40]
+        scotus_case = scotus_case[scotus_case['word_count'] >= 20]
 
         #scotus.append(scotus_case)
         #scotus_transcript = list(scotus_case['transcript'])

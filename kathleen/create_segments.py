@@ -7,6 +7,7 @@ import pandas as pd
 import json
 import re
 import os
+import soundfile
 
 def getMeta(docket, data):
 
@@ -65,7 +66,7 @@ def get_wav_data():
                            'speakers':speakers, 'speaker_roles':speaker_roles, 'times_new':times_new,
                            'start':start, 'end':end})
         scotus_case = df[df['speaker_roles'] == 'scotus_justice']
-        scotus_case = scotus_case[scotus_case['word_count'] >= 40]
+        scotus_case = scotus_case[scotus_case['word_count'] >= 20]
 
         #scotus.append(scotus_case)
         #scotus_transcript = list(scotus_case['transcript'])
@@ -87,7 +88,7 @@ def get_wav_data():
     #return pd.concat(scotus, ignore_index=True)
     return batch_flat_transcripts, batch_speakers, batch_start, batch_end, batch_fil
 
-def extract_pitch():
+def segments_out():
     scotus_flat_transcript, scotus_speakers, scotus_start, scotus_end, fil = get_wav_data()
     start_rounded = [round(item) for item in scotus_start]
     end_rounded = [round(item) for item in scotus_end]
@@ -98,6 +99,6 @@ def extract_pitch():
             y, sr = librosa.load(f'{current_file}.wav')
         i_start = start_rounded[i] * sr
         i_end = end_rounded[i] * sr
-        soundfile.write(f'{file[i]}_{i}.wav', y[i_start:i_end], sr)
+        soundfile.write(f'segments/{fil[i]}_{i}.wav', y[i_start:i_end], sr)
 
 segments_out()
