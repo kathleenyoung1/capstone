@@ -92,22 +92,31 @@ def get_wav_data():
     return batch_flat_transcripts, batch_speakers, batch_start, batch_end, batch_fil
 
 def segments_out():
-    scotus_flat_transcript, scotus_speakers, scotus_start, scotus_end, fil = get_wav_data()
-    start_rounded = [round(item) for item in scotus_start]
-    end_rounded = [round(item) for item in scotus_end]
-    for i in range(len(start_rounded)):
-        print(f"Processing {i+1} of {len(start_rounded)} segments")
+    #scotus_flat_transcript, scotus_speakers, scotus_start, scotus_end, fil = get_wav_data()
+    full_data = pd.read_csv('full_data.csv')
+    full_data = full_data[(full_data['duration'] <= 20.) & (full_data['file'] != '18-1259.wav')]
+    start_idx = list(full_data['start_idx'])
+    end_idx = list(full_data['end_idx'])
+    fil = list(full_data['file'])
+    #start_rounded = [round(item) for item in scotus_start]
+    #end_rounded = [round(item) for item in scotus_end]
+    #for i in range(len(start_rounded)):
+    for i in range(len(start_idx)):
+        print(f"Processing {i+1} of {len(start_idx)} segments")
         current_file = fil[i]
-        if (i==0) | ((i>=1) & (current_file != fil[i-1])):
-            y, sr = librosa.load(f'{current_file}.wav')
-        i_start = start_rounded[i] * sr
-        i_end = end_rounded[i] * sr
-        soundfile.write(f'segments3/{fil[i]}_{i}.wav', y[i_start:i_end], sr)
+        #if (i==0) | ((i>=1) & (current_file != fil[i-1])):
+        #    y, sr = librosa.load(f'{current_file}.wav')
+        y, sr = librosa.load(f'{current_file}',sr=librosa.core.get_samplerate(f'{current_file}'))
+        #i_start = start_rounded[i] * sr
+        #i_end = end_rounded[i] * sr
+        i_start = start_idx[i]
+        i_end = end_idx[i]
+        soundfile.write(f'segments5/{current_file[:-4]}_{i}.wav', y[i_start:i_end], sr)
 
 def wav_to_mp3():
-    for filename in os.listdir('segments3'):
+    for filename in os.listdir('segments5'):
         if filename.endswith(".wav"):
-            AudioSegment.from_wav(f"segments3/{filename}").export(f"mp3s3/{filename[:-4]}.mp3", format="mp3")
+            AudioSegment.from_wav(f"segments5/{filename}").export(f"mp3s5/{filename[:-4]}.mp3", format="mp3")
 
 segments_out()
 wav_to_mp3()
